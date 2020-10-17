@@ -18,63 +18,61 @@ mongoose.connect("mongodb+srv://karan:8p5Uk2VmzeiHzMMx@cluster0.swcbv.mongodb.ne
   console.log("connection failed!");
   });
 
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+  app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PATCH, PUT, DELETE, OPTIONS"
+    );
+    next();
+  });
 
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PATCH, DELETE, OPTIONS"
-  );
-  next();
-});
-
-
-// get post from client
   app.post("/api/posts", (req, res, next) => {
- // calling mongoose Post constructor and instantiating req title and content to database
-    const post =  new Post({
-      title:req.body.title,
+    const post = new Post({
+      title: req.body.title,
       content: req.body.content
     });
-    // saving data to database
-  post.save().then(createdPost=>{
-    res.status(201).json({
-      message: 'Post added successfully',
-      postId: createdPost._id
+    post.save().then(createdPost => {
+      res.status(201).json({
+        message: "Post added successfully",
+        postId: createdPost._id
+      });
     });
   });
 
+  app.put("/api/posts/:id", (req, res, next) => {
+    const post = new Post({
+      _id: req.body.id,
+      title: req.body.title,
+      content: req.body.content
+    });
+    Post.updateOne({ _id: req.params.id }, post).then(result => {
+      console.log(result);
+      res.status(200).json({ message: "Update successful!" });
+    });
   });
 
-  // sending data to client
   app.get("/api/posts", (req, res, next) => {
-    // Post is mongoose constructor we don't need new constructor
-    Post.find().then(documents=>{
+    Post.find().then(documents => {
       res.status(200).json({
         message: "Posts fetched successfully!",
         posts: documents
       });
     });
-
   });
-// deleting post in database for a specific id
-  app.delete("/api/posts/:id", (req,res,next)=>{
-    Post.deleteOne({_id:req.params.id})
-    .then(result=>{
+
+  app.delete("/api/posts/:id", (req, res, next) => {
+    Post.deleteOne({ _id: req.params.id }).then(result => {
       console.log(result);
-
-      res.status(200).json({
-        message: "Posts Deleted"
-      });
+      res.status(200).json({ message: "Post deleted!" });
     });
-
   });
-// this app.js could be exported anywhere outside this file
-module.exports = app;
+
+  module.exports = app;
