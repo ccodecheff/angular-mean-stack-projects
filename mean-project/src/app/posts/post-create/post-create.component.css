@@ -6,15 +6,16 @@ textarea {
 mat-spinner {
   margin: auto;
 }
-input[type="file"]{
+
+input[type="file"] {
   visibility: hidden;
 }
 
-.image-preview{
+.image-preview {
   height: 5rem;
-  margin: 1 rem 0;
+  margin: 1rem 0;
 }
 
-.image-preview img{
+.image-preview img {
   height: 100%;
 }

@@ -18,6 +18,7 @@ import { PostListComponent } from "./posts/post-list/post-list.component";
 import { PostsService } from './posts/posts.service';
 import{AppRoutingModule} from './app-routing.module';
 
+
 @NgModule({
   declarations: [
     AppComponent,
